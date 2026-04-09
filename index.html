@@ -712,7 +712,7 @@
             text-transform: uppercase;
         }
         #tracking-live-preview .line { display: flex; gap: 6px; flex-wrap: nowrap; }
-        #tracking-live-preview .key { color: #7dd3fc; flex-shrink: 0; }
+        #tracking-live-preview .key { color: #7dd3fc; flex-shrink: 0; min-width: 110px; }
         #tracking-live-preview .val { color: #a5f3c5; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 180px; }
         #tracking-live-preview .val.loading { color: #6b7a8d; font-style: italic; }
         /* Bottom: paragraph + buttons side by side */
@@ -767,14 +767,73 @@
         .consent-note { display: none; }
         /* Tracking popup mobile */
         @media (max-width: 620px) {
-            #modal-tracking .modal-content { padding: 18px 14px 16px; }
-            .tracking-header { display: none; }
-            .tracking-body { grid-template-columns: 1fr; gap: 10px; }
-            #tracking-live-preview { display: flex; }
-            .tracking-footer { flex-direction: column; align-items: stretch; gap: 10px; }
-            .tracking-footer-note { text-align: center; font-size: .8rem; }
-            .tracking-choice { width: 100%; flex-direction: row; }
-            .choice-btn { flex: 1; justify-content: center; font-size: .82rem; padding: 12px 8px; }
+            #modal-tracking .modal-content {
+                padding: 16px 12px 14px;
+                max-height: 92vh;
+                overflow-y: auto;
+                border-radius: 12px;
+                width: 96%;
+            }
+            .tracking-header {
+                gap: 8px;
+                margin-bottom: 10px;
+                padding-bottom: 10px;
+            }
+            .tracking-header h2 { font-size: .85rem; line-height: 1.3; }
+            .tracking-header .gdpr-badge { display: none; }
+            .tracking-icon { width: 28px; height: 28px; font-size: 14px; flex-shrink: 0; }
+
+            .tracking-body {
+                grid-template-columns: 1fr;
+                gap: 8px;
+                margin-bottom: 10px;
+            }
+
+            /* Info box compatto */
+            .tracking-info-box {
+                padding: 10px 12px;
+                font-size: .79rem;
+            }
+            .tracking-info-box > strong { font-size: .77rem; margin-bottom: 5px; }
+            .tracking-data-list { gap: 3px; margin: 4px 0 6px; }
+            .tracking-data-list li { font-size: .74rem; }
+            .stat-note { font-size: .73rem; padding-top: 6px; margin-top: 6px; }
+
+            /* Live preview: riformattato per mobile */
+            #tracking-live-preview {
+                display: flex;
+                padding: 10px 12px;
+                font-size: .7rem;
+                line-height: 1.6;
+            }
+            #tracking-live-preview .preview-label { font-size: .65rem; margin-bottom: 4px; }
+            #tracking-live-preview .line {
+                flex-wrap: wrap;
+                gap: 2px;
+                align-items: baseline;
+            }
+            #tracking-live-preview .key {
+                font-size: .68rem;
+                white-space: nowrap;
+            }
+            #tracking-live-preview .val {
+                font-size: .68rem;
+                max-width: 100%;
+                white-space: normal;
+                overflow-wrap: break-word;
+                word-break: break-all;
+            }
+
+            /* Footer */
+            .tracking-footer {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+                padding-top: 10px;
+            }
+            .tracking-footer-note { text-align: center; font-size: .78rem; line-height: 1.5; }
+            .tracking-choice { width: 100%; flex-direction: row; gap: 8px; }
+            .choice-btn { flex: 1; justify-content: center; font-size: .85rem; padding: 12px 8px; }
         }
         /* ===== LEGAL / CONFIRM MODALS ===== */
         .legal-reminder {
@@ -1000,12 +1059,12 @@
                 <!-- RIGHT: live preview -->
                 <div id="tracking-live-preview">
                     <div class="preview-label">↳ dati rilevati ora</div>
-                    <div class="line"><span class="key">data_accesso:&nbsp;</span><span class="val" id="prev-date">—</span></div>
-                    <div class="line"><span class="key">ip_address:&nbsp;&nbsp;&nbsp;</span><span class="val loading" id="prev-ip">in corso…</span></div>
-                    <div class="line"><span class="key">user_agent:&nbsp;&nbsp;&nbsp;</span><span class="val" id="prev-ua">—</span></div>
-                    <div class="line"><span class="key">sistema_os:&nbsp;&nbsp;&nbsp;</span><span class="val" id="prev-os">—</span></div>
-                    <div class="line"><span class="key">risoluzione:&nbsp;&nbsp;</span><span class="val" id="prev-res">—</span></div>
-                    <div class="line"><span class="key">lingua:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="val" id="prev-lang">—</span></div>
+                    <div class="line"><span class="key">data_accesso:</span><span class="val" id="prev-date">—</span></div>
+                    <div class="line"><span class="key">ip_address:</span><span class="val loading" id="prev-ip">in corso…</span></div>
+                    <div class="line"><span class="key">user_agent:</span><span class="val" id="prev-ua">—</span></div>
+                    <div class="line"><span class="key">sistema_os:</span><span class="val" id="prev-os">—</span></div>
+                    <div class="line"><span class="key">risoluzione:</span><span class="val" id="prev-res">—</span></div>
+                    <div class="line"><span class="key">lingua:</span><span class="val" id="prev-lang">—</span></div>
                 </div>
             </div>
 

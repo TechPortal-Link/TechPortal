@@ -765,75 +765,122 @@
         }
         #btn-consent-no:hover { background: #edf0f4; color: var(--text); border-color: #b0b8c4; }
         .consent-note { display: none; }
-        /* Tracking popup mobile */
+        /* Tracking popup mobile — ottimizzato per viewport ~360px (es. Realme RMX3085) */
         @media (max-width: 620px) {
+
+            /* Modale: occupa tutto lo schermo, scorrevole */
             #modal-tracking .modal-content {
-                padding: 16px 12px 14px;
-                max-height: 92vh;
+                width: 100%;
+                max-width: 100%;
+                min-height: 100dvh;
+                max-height: 100dvh;
+                border-radius: 0;
+                padding: 20px 16px 16px;
                 overflow-y: auto;
-                border-radius: 12px;
-                width: 96%;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                box-sizing: border-box;
             }
+
+            /* Header: icona + titolo su riga unica, badge nascosto */
             .tracking-header {
                 gap: 8px;
-                margin-bottom: 10px;
+                margin-bottom: 0;
                 padding-bottom: 10px;
+                flex-wrap: nowrap;
+                align-items: flex-start;
             }
-            .tracking-header h2 { font-size: .85rem; line-height: 1.3; }
+            .tracking-icon { width: 30px; height: 30px; font-size: 15px; flex-shrink: 0; margin-top: 2px; }
+            .tracking-header h2 { font-size: .9rem; line-height: 1.35; flex: 1; }
             .tracking-header .gdpr-badge { display: none; }
-            .tracking-icon { width: 28px; height: 28px; font-size: 14px; flex-shrink: 0; }
 
+            /* Body: colonna singola */
             .tracking-body {
                 grid-template-columns: 1fr;
-                gap: 8px;
-                margin-bottom: 10px;
+                gap: 10px;
+                margin-bottom: 0;
             }
 
-            /* Info box compatto */
+            /* Box dati tecnici */
             .tracking-info-box {
                 padding: 10px 12px;
-                font-size: .79rem;
+                font-size: .8rem;
+                line-height: 1.5;
             }
-            .tracking-info-box > strong { font-size: .77rem; margin-bottom: 5px; }
-            .tracking-data-list { gap: 3px; margin: 4px 0 6px; }
-            .tracking-data-list li { font-size: .74rem; }
-            .stat-note { font-size: .73rem; padding-top: 6px; margin-top: 6px; }
+            .tracking-info-box > strong {
+                font-size: .78rem;
+                margin-bottom: 6px;
+            }
+            .tracking-data-list {
+                gap: 4px;
+                margin: 5px 0 8px;
+            }
+            .tracking-data-list li {
+                font-size: .76rem;
+                gap: 6px;
+            }
+            .stat-note {
+                font-size: .74rem;
+                line-height: 1.45;
+                padding-top: 7px;
+                margin-top: 7px;
+            }
 
-            /* Live preview: riformattato per mobile */
+            /* Live preview: visibile, colonne allineate con grid */
             #tracking-live-preview {
                 display: flex;
                 padding: 10px 12px;
-                font-size: .7rem;
-                line-height: 1.6;
+                line-height: 1.7;
             }
-            #tracking-live-preview .preview-label { font-size: .65rem; margin-bottom: 4px; }
+            #tracking-live-preview .preview-label {
+                font-size: .66rem;
+                margin-bottom: 5px;
+            }
             #tracking-live-preview .line {
-                flex-wrap: wrap;
-                gap: 2px;
+                display: grid;
+                grid-template-columns: 100px 1fr;
+                gap: 4px;
                 align-items: baseline;
             }
             #tracking-live-preview .key {
-                font-size: .68rem;
+                font-size: .7rem;
                 white-space: nowrap;
+                min-width: unset;
             }
             #tracking-live-preview .val {
-                font-size: .68rem;
+                font-size: .7rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
                 max-width: 100%;
-                white-space: normal;
-                overflow-wrap: break-word;
-                word-break: break-all;
             }
 
-            /* Footer */
+            /* Footer testo + pulsanti */
             .tracking-footer {
                 flex-direction: column;
                 align-items: stretch;
-                gap: 8px;
+                gap: 10px;
                 padding-top: 10px;
+                margin-top: auto;
             }
-            .tracking-footer-note { text-align: center; font-size: .78rem; line-height: 1.5; }
-            .tracking-choice { width: 100%; flex-direction: row; gap: 8px; }
-            .choice-btn { flex: 1; justify-content: center; font-size: .85rem; padding: 12px 8px; }
+            .tracking-footer-note {
+                text-align: center;
+                font-size: .8rem;
+                line-height: 1.55;
+            }
+            .tracking-choice {
+                width: 100%;
+                flex-direction: row;
+                gap: 10px;
+            }
+            .choice-btn {
+                flex: 1;
+                justify-content: center;
+                font-size: .88rem;
+                padding: 13px 8px;
+                border-radius: 10px;
+            }
         }
         /* ===== LEGAL / CONFIRM MODALS ===== */
         .legal-reminder {

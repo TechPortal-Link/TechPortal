@@ -18,9 +18,13 @@
     
     <!-- CSP rimossa: gestita lato server in produzione -->
     
+    <!-- Manifest PWA: permette "Aggiungi a schermata Home" su Android/iOS -->
+    <link rel="manifest" href="manifest.json">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- subset=latin per ridurre il peso del font su mobile -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap&subset=latin" rel="stylesheet">
     
     <style>
         *, *::before, *::after {
@@ -1155,7 +1159,7 @@
                 
                 <div class="code-box loading" id="code-box">
                     <span class="code-label">↳ DATI RILEVATI ORA</span>
-                    <div class="code-content" id="code-content">
+                    <div class="code-content" id="code-content" aria-live="polite" aria-atomic="false">
                         <div class="code-line"><span class="code-key">data_accesso:</span><span class="code-val" id="preview-date">—</span></div>
                         <div class="code-line"><span class="code-key">ip_address:</span><span class="code-val loading" id="preview-ip">in attesa...</span></div>
                         <div class="code-line"><span class="code-key">user_agent:</span><span class="code-val" id="preview-ua">—</span></div>

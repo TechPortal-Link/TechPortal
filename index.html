@@ -12,6 +12,9 @@
     <meta name="theme-color" content="#0f172a">
     <meta name="color-scheme" content="light">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
     
     <!-- CSP rimossa: gestita lato server in produzione -->
     
@@ -50,16 +53,23 @@
         
         html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
         
+        :focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+        
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 14px;
-            line-height: 1.5;
+            font-size: 15px;
+            line-height: 1.6;
             color: var(--primary);
             background: var(--bg);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
         
         .skip-link {
@@ -94,8 +104,23 @@
             max-width: 800px;
             max-height: 90vh;
             overflow-y: auto;
+            overflow-x: hidden;
             box-shadow: var(--shadow-lg);
             border: 1px solid var(--border);
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Drag handle indicator for bottom sheet on mobile */
+        @media (max-width: 480px) {
+            .tracking-card::before {
+                content: '';
+                display: block;
+                width: 40px;
+                height: 4px;
+                background: #d1d5db;
+                border-radius: 2px;
+                margin: 12px auto 0;
+            }
         }
         
         .tracking-header {
@@ -658,6 +683,8 @@
             text-decoration: none;
             font-weight: 600;
             font-size: 14px;
+            min-height: 44px;
+            touch-action: manipulation;
         }
         
         .content-view {
@@ -963,7 +990,7 @@
             .footer-text { max-width: 100%; }
             .footer-buttons { width: 100%; }
             .footer-buttons .btn { flex: 1; }
-            .header-inner { flex-direction: column; gap: 12px; }
+            .header-inner { flex-direction: column; gap: 12px; padding: 12px 16px; }
             .nav-list { flex-wrap: wrap; justify-content: center; }
             .stats-bar { grid-template-columns: repeat(2, 1fr); }
             .stat-item:nth-child(2) { border-right: none; }
@@ -974,15 +1001,112 @@
             .confirm-actions { flex-direction: column-reverse; }
             .confirm-actions .btn { width: 100%; }
             .footer-inner { flex-direction: column; text-align: center; }
+            .hero { padding: 48px 16px; }
+            .hero__title { font-size: clamp(24px, 6vw, 36px); }
+            .features-section { padding: 40px 16px; }
+            .code-box { padding: 14px; }
+            .code-line { flex-direction: column; gap: 2px; }
+            .code-key { min-width: unset; }
+            .tracking-title { font-size: 15px; }
+            .legal-content { padding: 20px; max-height: 80vh; }
+            .confirm-content { padding: 20px; }
         }
         
         @media (max-width: 480px) {
-            .tracking-card { border-radius: 0; max-height: 100vh; }
-            .tracking-header { flex-wrap: wrap; gap: 12px; }
+            .tracking-card { border-radius: 0; max-height: 100vh; height: 100%; }
+            .modal-tracking { padding: 0; align-items: flex-end; }
+            .tracking-card { border-radius: 20px 20px 0 0; max-height: 95vh; }
+            .tracking-header { flex-wrap: wrap; gap: 10px; padding: 16px; }
+            .tracking-body { padding: 16px; }
+            .tracking-footer { padding: 16px; }
             .gdpr-badge { margin-left: auto; }
             .btn { padding: 14px 20px; font-size: 15px; }
+            .stat__value { font-size: 20px; }
+            .stat-item { padding: 14px 10px; }
+            .features-section { padding: 32px 12px; }
+            .feature-card { padding: 20px 16px; }
+            .content-card { padding: 16px; margin: 0 8px; border-radius: 12px; }
+            .content-view { padding: 0 8px; margin: 24px auto; }
+            .modal { padding: 0; align-items: flex-end; }
+            .modal__content { border-radius: 20px 20px 0 0; max-width: 100%; }
+            .modal__content[style*="800px"] { max-width: 100%; }
+            .doc-item { font-size: 12px; padding: 14px 12px; }
+            .section__header { margin-bottom: 24px; }
+            .nav__button, .nav__link { font-size: 13px; padding: 8px 12px; }
+            .brand { font-size: 16px; }
+            .header-inner { padding: 10px 12px; }
+        }
+
+        /* Tablet landscape */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .tracking-body { gap: 14px; }
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+            .header-inner { padding: 14px 20px; }
         }
         
+        /* Safe area for iPhones with notch/Dynamic Island */
+        @supports (padding: env(safe-area-inset-bottom)) {
+            .tracking-footer { padding-bottom: calc(16px + env(safe-area-inset-bottom)); }
+            .site-footer { padding-bottom: calc(32px + env(safe-area-inset-bottom)); }
+        }
+        
+        /* Hamburger menu mobile */
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 8px 10px;
+            cursor: pointer;
+            flex-direction: column;
+            gap: 5px;
+            touch-action: manipulation;
+            min-height: 44px;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-toggle span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.25s ease;
+        }
+        .nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+        .nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        @media (max-width: 640px) {
+            .nav-toggle { display: flex; }
+            .primary-nav { width: 100%; }
+            .nav-list {
+                flex-direction: column;
+                align-items: stretch;
+                width: 100%;
+                display: none;
+                background: rgba(255,255,255,0.05);
+                border-radius: 10px;
+                padding: 8px;
+                gap: 4px;
+            }
+            .nav-list.nav-open { display: flex; }
+            .nav__button, .nav__link { justify-content: flex-start; width: 100%; }
+            .dropdown {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                box-shadow: none;
+                border: none;
+                background: rgba(255,255,255,0.03);
+                display: none;
+                min-width: unset;
+            }
+            .dropdown.active { display: block; }
+            .header-inner { flex-direction: row; flex-wrap: wrap; }
+        }
+
         .visually-hidden {
             position: absolute;
             width: 1px;
@@ -1059,8 +1183,11 @@
     <header class="site-header" id="site-header">
         <div class="header-inner">
             <a href="#" class="brand" id="brand-home">Tech<span>Portal</span></a>
+            <button type="button" class="nav-toggle" id="btn-nav-toggle" aria-expanded="false" aria-controls="main-nav-list" aria-label="Apri menu">
+                <span></span><span></span><span></span>
+            </button>
             <nav class="primary-nav">
-                <ul class="nav-list">
+                <ul class="nav-list" id="main-nav-list">
                     <li>
                         <button type="button" class="nav__button" id="btn-categories" aria-haspopup="true" aria-expanded="false">Cellulari ▾</button>
                         <div class="dropdown" id="dropdown-categories">
@@ -1490,6 +1617,17 @@
             function initNav() {
                 const btnCat = document.getElementById('btn-categories');
                 const dropdown = document.getElementById('dropdown-categories');
+                const btnNavToggle = document.getElementById('btn-nav-toggle');
+                const navList = document.getElementById('main-nav-list');
+                
+                // Hamburger menu toggle
+                if (btnNavToggle) {
+                    btnNavToggle.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const isOpen = navList.classList.toggle('nav-open');
+                        btnNavToggle.setAttribute('aria-expanded', isOpen);
+                    });
+                }
                 
                 btnCat.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -1499,9 +1637,11 @@
                 });
                 
                 document.addEventListener('click', (e) => {
-                    if (!e.target.closest('.primary-nav')) {
+                    if (!e.target.closest('.primary-nav') && !e.target.closest('#btn-nav-toggle')) {
                         btnCat.setAttribute('aria-expanded', 'false');
                         dropdown.classList.remove('active');
+                        if (navList) navList.classList.remove('nav-open');
+                        if (btnNavToggle) btnNavToggle.setAttribute('aria-expanded', 'false');
                     }
                 });
                 
@@ -1512,6 +1652,8 @@
                         navigateTo(target);
                         btnCat.setAttribute('aria-expanded', 'false');
                         dropdown.classList.remove('active');
+                        if (navList) navList.classList.remove('nav-open');
+                        if (btnNavToggle) btnNavToggle.setAttribute('aria-expanded', 'false');
                     });
                 });
                 

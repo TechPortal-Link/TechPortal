@@ -1384,6 +1384,30 @@
             </div>
         </section>
 
+        <!-- ERRORI COMUNI E SOLUZIONI -->
+        <section id="view-errori" class="view-section">
+            <div class="content-view">
+                <article class="content-card">
+                    <h2 class="content-card__title">Errori Comuni e Soluzioni</h2>
+                    <div class="alert alert--info" id="errori-alert"><span>📋</span><div><strong>Passo 1 di 2:</strong> Leggi prima le <button type="button" class="legal-trigger" style="background:none;border:none;color:#0060c0;text-decoration:underline;cursor:pointer;font-weight:700;">Note Legali e la Limitazione di Responsabilità</button> per abilitare la casella di accettazione.</div></div>
+                    <div class="disclaimer-box"><label class="disclaimer-box__control"><input type="checkbox" id="accept-errori" class="disclaimer-box__checkbox" disabled><span class="disclaimer-box__label"><span class="disclaimer-box__hint" id="errori-hint">⚠️ Passo 2 di 2 — disponibile solo dopo aver consultato le Note Legali</span>Dichiaro di aver preso visione e accettato integralmente le Note Legali e la Limitazione di Responsabilità — abilita i link ai documenti</span></label></div>
+                    <div class="doc-list" id="errori-docs">
+                        <a href="documenti/Il_mito_del_riso.pdf" class="doc-item" data-name="Il_mito_del_riso" aria-disabled="true">📄 Il_mito_del_riso</a>
+                        <a href="documenti/Caricare_al_100_Batteria.pdf" class="doc-item" data-name="Caricare_al_100_Batteria" aria-disabled="true">📄 Caricare_al_100_Batteria</a>
+                        <a href="documenti/App_Pulitrici_Guida_Completa.pdf" class="doc-item" data-name="App_Pulitrici_Guida_Completa" aria-disabled="true">📄 App_Pulitrici_Guida_Completa</a>
+                        <a href="documenti/Schermo_nero_telefono_acceso_Guida_Completa.pdf" class="doc-item" data-name="Schermo_nero_telefono_acceso_Guida_Completa" aria-disabled="true">📄 Schermo_nero_telefono_acceso_Guida_Completa</a>
+                        <a href="documenti/Perche_il_WiFi_si_scollega_sempre.pdf" class="doc-item" data-name="Perche_il_WiFi_si_scollega_sempre" aria-disabled="true">📄 Perche_il_WiFi_si_scollega_sempre</a>
+                        <a href="documenti/Telefono_non_carica_piu.pdf" class="doc-item" data-name="Telefono_non_carica_piu" aria-disabled="true">📄 Telefono_non_carica_piu</a>
+                        <a href="documenti/Messaggi_non_arrivano.pdf" class="doc-item" data-name="Messaggi_non_arrivano" aria-disabled="true">📄 Messaggi_non_arrivano</a>
+                        <a href="documenti/Chiudere_le_app_a_mano.pdf" class="doc-item" data-name="Chiudere_le_app_a_mano" aria-disabled="true">📄 Chiudere_le_app_a_mano</a>
+                        <a href="documenti/Luminosita_al_Massimo.pdf" class="doc-item" data-name="Luminosita_al_Massimo" aria-disabled="true">📄 Luminosita_al_Massimo</a>
+                        <a href="documenti/Aggiornamenti_rimandati.pdf" class="doc-item" data-name="Aggiornamenti_rimandati" aria-disabled="true">📄 Aggiornamenti_rimandati</a>
+                    </div>
+                    <button type="button" class="btn btn-secondary btn-back">← Torna alla Home</button>
+                </article>
+            </div>
+        </section>
+
         <!-- GENERIC -->
         <section id="view-generic" class="view-section"><div class="content-view"><article class="content-card" style="text-align: center;"><h2 class="content-card__title" id="generic-title">Sezione in fase di aggiornamento</h2><p style="color:var(--text-muted);margin-bottom:24px;">I documenti per questa categoria saranno disponibili prossimamente.</p><button type="button" class="btn btn-secondary btn-back">← Torna alla Home</button></article></div></section>
     </main>
@@ -1796,6 +1820,7 @@
                 else if (view === 'pinpuk') id = 'view-pinpuk';
                 else if (view === 'privacy') id = 'view-privacy';
                 else if (view === 'backup') id = 'view-backup';
+                else if (view === 'errori') id = 'view-errori';
                 else if (view !== 'home') {
                     id = 'view-generic';
                     document.getElementById('generic-title').textContent = view.charAt(0).toUpperCase() + view.slice(1);
@@ -1851,7 +1876,7 @@
                     }
                 }
 
-                ['pinpuk', 'privacy', 'backup'].forEach(function(sec) {
+                ['pinpuk', 'privacy', 'backup', 'errori'].forEach(function(sec) {
                     const chk = document.getElementById('accept-' + sec);
                     if (chk) {
                         chk.disabled = false;
@@ -1878,6 +1903,9 @@
                 });
                 document.getElementById('accept-backup')?.addEventListener('change', (e) => {
                     toggleDocs('#backup-docs', e.target.checked);
+                });
+                document.getElementById('accept-errori')?.addEventListener('change', (e) => {
+                    toggleDocs('#errori-docs', e.target.checked);
                 });
                 
                 document.querySelectorAll('.doc-item').forEach(doc => {

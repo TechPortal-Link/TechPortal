@@ -19,7 +19,7 @@
     <meta name="format-detection" content="telephone=no">
     
     <!-- Sicurezza: CSP, anti-clickjacking, anti-MIME-sniffing -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ip-api.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://script.google.com https://api64.ipify.org https://ipapi.co https://api.codetabs.com https://ip-api.com; frame-ancestors 'none'; form-action 'self' https://script.google.com; base-uri 'self'; object-src 'none';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ip-api.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://script.google.com https://api.ipify.org https://api64.ipify.org https://ipapi.co https://api.codetabs.com https://ip-api.com https://ipwho.is; frame-ancestors 'none'; form-action 'self' https://script.google.com; base-uri 'self'; object-src 'none';">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
@@ -1558,13 +1558,21 @@
                 if (!ip || ip === 'in attesa...' || ip === 'non disponibile' || ip === 'Non rilevabile' || ip === 'Caricamento...') {
                     return 'n/d';
                 }
-                if (ip.includes('.')) {
+                // IPv4: mostra solo i primi due ottetti (es. 1.2.0.0)
+                if (ip.includes('.') && !ip.includes(':')) {
                     const parts = ip.split('.');
-                    if (parts.length >= 2) {
+                    if (parts.length === 4) {
                         return parts[0] + '.' + parts[1] + '.0.0';
                     }
                 }
-                return 'formato.non.supportato';
+                // IPv6: mostra solo i primi 3 gruppi seguiti da ::
+                if (ip.includes(':')) {
+                    const groups = ip.split(':');
+                    if (groups.length >= 3) {
+                        return groups[0] + ':' + groups[1] + ':' + groups[2] + '::';
+                    }
+                }
+                return 'n/d';
             }
             
             function submitTrackingData() {
@@ -1621,7 +1629,7 @@
                 if (btnNo) btnNo.disabled = false;
             }
             
-            // Funzione per ottenere IP + Geo tramite codetabs.com (HTTPS, CORS aperto, no key, IP2Location DB)
+            // Funzione per ottenere IP + Geo con catena di provider ridondanti
             function fetchIPWithCache() {
                 const cached = sessionStorage.getItem(IP_CACHE_KEY);
                 if (cached) {
@@ -1649,23 +1657,44 @@
                     enableButtons();
                 }
 
-                // Step 1: ottieni l'IP pubblico tramite ipify (HTTPS, CORS aperto)
-                fetch('https://api64.ipify.org?format=json', { signal: AbortSignal.timeout(5000) })
-                    .then(r => r.json())
-                    .then(d => {
-                        const ip = d.ip;
-                        if (!ip) throw new Error('no ip');
-                        // Step 2: geolocalizza l'IP tramite codetabs.com (IP2Location DB, CORS aperto)
-                        return fetch('https://api.codetabs.com/v1/geolocation/json?ip=' + ip, { signal: AbortSignal.timeout(5000) })
-                            .then(r => r.json())
-                            .then(geo => {
-                                const paese = geo.country_name || 'Non rilevato';
-                                const citta = geo.city         || geo.region_name || 'Non rilevata';
-                                saveAndDisplay(ip, paese, citta);
-                            });
-                    })
-                    .catch(() => {
-                        // Fallback JSONP: ip-api.com (funziona da file://)
+                // Provider 1: ipwho.is — gratuito, HTTPS, CORS aperto, IP+geo in una chiamata
+                function tryIpWhoIs() {
+                    return fetch('https://ipwho.is/', { signal: AbortSignal.timeout(7000) })
+                        .then(r => { if (!r.ok) throw new Error('err'); return r.json(); })
+                        .then(d => {
+                            if (!d.ip || !d.success) throw new Error('no ip');
+                            saveAndDisplay(d.ip, d.country || 'Non rilevato', d.city || d.region || 'Non rilevata');
+                        });
+                }
+
+                // Provider 2: ipapi.co — IP+geo in una chiamata
+                function tryIpApiCo() {
+                    return fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(7000) })
+                        .then(r => { if (!r.ok) throw new Error('err'); return r.json(); })
+                        .then(d => {
+                            if (!d.ip) throw new Error('no ip');
+                            saveAndDisplay(d.ip, d.country_name || 'Non rilevato', d.city || d.region || 'Non rilevata');
+                        });
+                }
+
+                // Provider 3: ipify (solo IP) + codetabs (geo)
+                function tryIpifyCodetabs() {
+                    return fetch('https://api.ipify.org?format=json', { signal: AbortSignal.timeout(6000) })
+                        .then(r => r.json())
+                        .then(d => {
+                            const ip = d.ip;
+                            if (!ip) throw new Error('no ip');
+                            return fetch('https://api.codetabs.com/v1/geolocation/json?ip=' + ip, { signal: AbortSignal.timeout(6000) })
+                                .then(r => r.json())
+                                .then(geo => {
+                                    saveAndDisplay(ip, geo.country_name || 'Non rilevato', geo.city || geo.region_name || 'Non rilevata');
+                                });
+                        });
+                }
+
+                // Provider 4 (ultimo): ip-api.com via JSONP — funziona anche senza CORS
+                function tryJsonpFallback() {
+                    return new Promise(function(resolve) {
                         const cbName = '_geoip_cb_' + Date.now();
                         const script = document.createElement('script');
                         const timer = setTimeout(function() {
@@ -1673,25 +1702,36 @@
                             if (script.parentNode) script.parentNode.removeChild(script);
                             saveAndDisplay('Non rilevabile', 'Non rilevato', 'Non rilevata');
                             updateIPDisplay('Non rilevabile (rete/privacy)');
-                        }, 5000);
+                            resolve();
+                        }, 7000);
                         window[cbName] = function(data) {
                             clearTimeout(timer);
                             delete window[cbName];
                             if (script.parentNode) script.parentNode.removeChild(script);
-                            if (data.status === 'success') {
+                            if (data && data.status === 'success') {
                                 saveAndDisplay(data.query, data.country || 'Non rilevato', data.city || 'Non rilevata');
                             } else {
                                 saveAndDisplay('Non rilevabile', 'Non rilevato', 'Non rilevata');
                             }
+                            resolve();
                         };
                         script.onerror = function() {
                             clearTimeout(timer);
                             delete window[cbName];
+                            if (script.parentNode) script.parentNode.removeChild(script);
                             saveAndDisplay('Non rilevabile', 'Non rilevato', 'Non rilevata');
+                            resolve();
                         };
                         script.src = 'https://ip-api.com/json/?fields=status,query,country,city&callback=' + cbName;
                         document.head.appendChild(script);
                     });
+                }
+
+                // Cascata: 1 → 2 → 3 → 4
+                tryIpWhoIs()
+                    .catch(() => tryIpApiCo())
+                    .catch(() => tryIpifyCodetabs())
+                    .catch(() => tryJsonpFallback());
             }
             function initLocalData() {
                 document.getElementById('preview-date').textContent = state.info.date;

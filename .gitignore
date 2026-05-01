@@ -1,0 +1,33 @@
+# Sistema operativo
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+
+# File temporanei
+*.tmp
+*.temp
+*.log
+*.bak
+*.swp
+*~
+
+# Node (se mai usato in futuro)
+node_modules/
+npm-debug.log*
+
+# File privati — NON caricare mai questi su GitHub
+secrets.json
+config.local.js
+.env
+.env.*
